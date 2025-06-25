@@ -6,6 +6,7 @@
 #include "SCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/BlueprintTypeConversions.h"
 
 void ASPlayerController::HandleMove(const FInputActionValue& InputActionValue)
 {
@@ -13,19 +14,24 @@ void ASPlayerController::HandleMove(const FInputActionValue& InputActionValue)
 
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorForwardVector(), MovementVector.Y);
-		PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), MovementVector.X);
+		FRotator PlayerControllerRot(this->GetControlRotation());
+		PlayerControllerRot.Pitch = 0;
+		PlayerControllerRot.Roll = 0;
+		
+		PlayerCharacter->AddMovementInput(PlayerControllerRot.Vector(), MovementVector.Y);
+		const FVector RightVector = FRotationMatrix(PlayerControllerRot).GetScaledAxis(EAxis::Y);
+		PlayerCharacter->AddMovementInput(RightVector, MovementVector.X);
 	}
 }
 
 void ASPlayerController::HandleTurn(const FInputActionValue& InputActionValue)
 {
-	const float TurningVector = InputActionValue.Get<float>();
-
+	const FVector2D TurningVector = InputActionValue.Get<FVector2D>();
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->AddControllerYawInput(TurningVector);
-	}
+		PlayerCharacter->AddControllerYawInput(TurningVector.X);
+		this->AddPitchInput(TurningVector.Y);
+	}  
 }
 
 void ASPlayerController::OnPossess(APawn* aPawn)
