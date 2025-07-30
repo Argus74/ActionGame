@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
-
+class UInputAction;
 UCLASS()
 class ACTIONGAME_API ASCharacter : public ACharacter
 {
@@ -22,9 +23,17 @@ protected:
 	UCameraComponent* CameraComp;
 
 	USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-public:	
+	
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Attack")
+	UInputAction* ActionPrimaryAttack = nullptr;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void PrimaryAttack();
 };

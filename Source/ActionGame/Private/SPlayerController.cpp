@@ -58,7 +58,20 @@ void ASPlayerController::OnPossess(APawn* aPawn)
 
 	if (ActionTurn)
 	{
-		EnhancedInputComponent->BindAction(ActionTurn, ETriggerEvent::Triggered, this, &ASPlayerController::HandleTurn);
+		EnhancedInputComponent->BindAction(ActionTurn,
+			ETriggerEvent::Triggered,
+			this,
+			&ASPlayerController::HandleTurn
+			);
+	}
+	UInputAction* ActionPrimaryAttack = PlayerCharacter->ActionPrimaryAttack;
+	if  (ActionPrimaryAttack)
+	{
+		EnhancedInputComponent->BindAction(ActionPrimaryAttack,
+			ETriggerEvent::Triggered,
+			PlayerCharacter,
+			&ASCharacter::PrimaryAttack
+			);
 	}
 		
 }
