@@ -29,11 +29,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	UInputAction* ActionTurn = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
+	UInputAction* ActionJump = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContext = nullptr;
-
-	
 private:
 	UPROPERTY()
 	UEnhancedInputComponent* EnhancedInputComponent = nullptr;
