@@ -3,6 +3,8 @@
 
 #include "SCharacter.h"
 
+#include "SInteractionComponent.h"
+#include "AI/NavigationSystemBase.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -17,6 +19,8 @@ ASCharacter::ASCharacter()
 	SpringArm->bUsePawnControlRotation = true;
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArm);
+	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
+	
 	this->bUseControllerRotationYaw = false;
 	this->GetCharacterMovement()->bOrientRotationToMovement = true;
 }

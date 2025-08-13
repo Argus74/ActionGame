@@ -6,6 +6,7 @@
 #include "SCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "SInteractionComponent.h"
 #include "Kismet/BlueprintTypeConversions.h"
 
 void ASPlayerController::HandleMove(const FInputActionValue& InputActionValue)
@@ -78,6 +79,14 @@ void ASPlayerController::OnPossess(APawn* aPawn)
 			PlayerCharacter,
 			&ASCharacter::PrimaryAttack
 			);
+	}
+
+	if (ActionInteract)
+	{
+		EnhancedInputComponent->BindAction(ActionInteract,
+			ETriggerEvent::Triggered,
+			PlayerCharacter->InteractionComp,
+			&USInteractionComponent::PrimaryInteract);
 	}
 		
 }

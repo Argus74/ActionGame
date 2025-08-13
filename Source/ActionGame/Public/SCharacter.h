@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+class USInteractionComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
@@ -18,7 +19,8 @@ class ACTIONGAME_API ASCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ASCharacter();
-
+	
+	USInteractionComponent* InteractionComp;
 protected:
 	UCameraComponent* CameraComp;
 

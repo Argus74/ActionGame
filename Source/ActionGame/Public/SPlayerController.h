@@ -32,6 +32,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	UInputAction* ActionJump = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Interaction")
+	UInputAction* ActionInteract = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContext = nullptr;
