@@ -26,8 +26,13 @@ protected:
 
 	USpringArmComponent* SpringArm;
 
+	FTimerHandle TimerHandle;
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* AttackAnim;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
@@ -38,4 +43,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void PrimaryAttack();
+
+	void OnPrimaryAttackTimerComplete();
 };

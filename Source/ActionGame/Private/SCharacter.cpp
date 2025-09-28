@@ -41,6 +41,13 @@ void ASCharacter::Tick(float DeltaTime)
 
 void ASCharacter::PrimaryAttack()
 {
+	this->PlayAnimMontage(AttackAnim);
+	
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASCharacter::OnPrimaryAttackTimerComplete, 0.2f, false);
+}
+
+void ASCharacter::OnPrimaryAttackTimerComplete()
+{
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
 
@@ -48,4 +55,3 @@ void ASCharacter::PrimaryAttack()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
-

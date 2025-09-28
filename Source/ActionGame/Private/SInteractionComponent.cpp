@@ -28,18 +28,28 @@ void USInteractionComponent::PrimaryInteract()
 	FCollisionObjectQueryParams CollisionObjectQueryParams;
 	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	GetWorld()->LineTraceSingleByObjectType(Hit, ViewLocation, EndPoint, CollisionObjectQueryParams);
+	TArray<struct FHitResult> hits;
+	FCollisionShape sphere;
+	sphere.SetSphere(30.f);
+	GetWorld()->SweepMultiByObjectType(hits, ViewLocation, EndPoint, FQuat::Identity, CollisionObjectQueryParams, FCollisionShape(sphere));
 	const float ArrowSize = 100.0f;
 	const float Thickness = 5.0f;
-	DrawDebugDirectionalArrow(GetWorld(), ViewLocation, EndPoint, ArrowSize, FColor::Red, false, 100.0f, 0, Thickness);
-	AActor* HitActor = Hit.GetActor();
-	if (HitActor)
+	
+	for (FHitResult result : hits)
 	{
-		if (HitActor->Implements<USGameplayInterface>())
+		AActor* HitActor = result.GetActor();
+		if (HitActor)
 		{
-			APawn* OwnerPawn = Cast<APawn>(Owner);
-			ISGameplayInterface::Execute_Interact(HitActor, OwnerPawn);
+			if (HitActor->Implements<USGameplayInterface>())
+			{
+				APawn* OwnerPawn = Cast<APawn>(Owner);
+				ISGameplayInterface::Execute_Interact(HitActor, OwnerPawn);
+				break;
+			}
 		}
 	}
+	
+	DrawDebugDirectionalArrow(GetWorld(), ViewLocation, EndPoint, ArrowSize, FColor::Red, false, 100.0f, 0, Thickness);
 }
 
 
