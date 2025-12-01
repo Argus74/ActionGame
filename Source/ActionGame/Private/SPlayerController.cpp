@@ -81,6 +81,16 @@ void ASPlayerController::OnPossess(APawn* aPawn)
 			);
 	}
 
+	UInputAction* ActionSecondaryAttack = PlayerCharacter->ActionSecondaryAttack;
+	if (ActionSecondaryAttack)
+	{
+		EnhancedInputComponent->BindAction(ActionSecondaryAttack,
+		ETriggerEvent::Triggered,
+		PlayerCharacter,
+		&ASCharacter::SecondaryAttack
+		);
+	}
+
 	if (ActionInteract)
 	{
 		EnhancedInputComponent->BindAction(ActionInteract,
