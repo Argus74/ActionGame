@@ -25,24 +25,25 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
-	UInputAction* ActionMove = nullptr;
+	TObjectPtr<const UInputAction> ActionMove = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
-	UInputAction* ActionTurn = nullptr;
+	TObjectPtr<const UInputAction> ActionTurn = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
-	UInputAction* ActionJump = nullptr;
+	TObjectPtr<const UInputAction> ActionJump = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Interaction")
-	UInputAction* ActionInteract = nullptr;
+	TObjectPtr<const UInputAction> ActionInteract = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContext = nullptr;
+	
 private:
 	UPROPERTY()
-	UEnhancedInputComponent* EnhancedInputComponent = nullptr;
+	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = nullptr;
 	GENERATED_BODY()
 
 	UPROPERTY()
-	ASCharacter* PlayerCharacter = nullptr;
+	TObjectPtr<ASCharacter> PlayerCharacter = nullptr;
 };

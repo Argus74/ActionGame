@@ -44,7 +44,7 @@ void ASPlayerController::OnPossess(APawn* aPawn)
 	EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	checkf(EnhancedInputComponent, TEXT("Unable to get reference to the EnhancedInputComponent."));
 
-	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	TObjectPtr<UEnhancedInputLocalPlayerSubsystem> InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	checkf(EnhancedInputComponent, TEXT("Unable to get reference to the EnhancedInputComponent"))
 
 	checkf(InputMappingContext, TEXT("InputMappingContext was not specified."));
@@ -68,27 +68,37 @@ void ASPlayerController::OnPossess(APawn* aPawn)
 
 	if (ActionJump)
 	{
-		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, PlayerCharacter, &ASCharacter::Jump);
+		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, PlayerCharacter.Get(), &ASCharacter::Jump);
 	}
 	
-	UInputAction* ActionPrimaryAttack = PlayerCharacter->ActionPrimaryAttack;
+	TObjectPtr<UInputAction> ActionPrimaryAttack = PlayerCharacter->ActionPrimaryAttack;
 	if  (ActionPrimaryAttack)
 	{
 		EnhancedInputComponent->BindAction(ActionPrimaryAttack,
 			ETriggerEvent::Triggered,
-			PlayerCharacter,
+			PlayerCharacter.Get(),
 			&ASCharacter::PrimaryAttack
 			);
 	}
 
-	UInputAction* ActionSecondaryAttack = PlayerCharacter->ActionSecondaryAttack;
+	TObjectPtr<UInputAction> ActionSecondaryAttack = PlayerCharacter->ActionSecondaryAttack;
 	if (ActionSecondaryAttack)
 	{
 		EnhancedInputComponent->BindAction(ActionSecondaryAttack,
 		ETriggerEvent::Triggered,
-		PlayerCharacter,
+		PlayerCharacter.Get(),
 		&ASCharacter::SecondaryAttack
 		);
+	}
+
+	TObjectPtr<UInputAction> ActionTertiaryAttack = PlayerCharacter->ActionTertiaryAttack;
+	if (ActionTertiaryAttack)
+	{
+		EnhancedInputComponent->BindAction(ActionTertiaryAttack,
+			ETriggerEvent::Triggered,
+			PlayerCharacter.Get(),
+			&ASCharacter::TertiaryAttack
+			);
 	}
 
 	if (ActionInteract)

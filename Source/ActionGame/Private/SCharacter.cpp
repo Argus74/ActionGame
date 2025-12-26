@@ -57,11 +57,17 @@ void ASCharacter::SecondaryAttack()
 	GetWorldTimerManager().SetTimer(SecondaryTimerHandle, this, &ASCharacter::OnSecondaryAttackTimerComplete, 0.2f, false);
 }
 
-void ASCharacter::OnPrimaryAttackTimerComplete()
+void ASCharacter::TertiaryAttack()
 {
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	this->PlayAnimMontage(AttackAnim3);
+
+	GetWorldTimerManager().SetTimer(TertiaryTimerHandle, this, &ASCharacter::OnTertiaryAttackTimerComplete, 0.2f, false);
+}
+
+AActor* ASCharacter::FireProjectileInCameraDirection(UClass* ProjectileClassToSpawn, FName SocketName)
+{
+	FVector HandLocation = GetMesh()->GetSocketLocation(SocketName);
 	FHitResult HitResult;
-	FHitResult DebugHitResult;
 	FVector RayTraceStart = CameraComp->GetComponentLocation();
 	FVector RayTraceEnd;
 	float TraceLimit = 5000;
@@ -69,7 +75,7 @@ void ASCharacter::OnPrimaryAttackTimerComplete()
 	const FCollisionQueryParams CollisionQueryParams;
 	
 	GetWorld()->LineTraceSingleByChannel(HitResult, RayTraceStart, RayTraceEnd, ECollisionChannel::ECC_Visibility);
-	DrawDebugLineTraceSingle(GetWorld(), RayTraceStart, RayTraceEnd, EDrawDebugTrace::Persistent, true, DebugHitResult, FLinearColor::Green, FLinearColor::Red, 5.0);
+	//DrawDebugLineTraceSingle(GetWorld(), RayTraceStart, RayTraceEnd, EDrawDebugTrace::Persistent, true, DebugHitResult, FLinearColor::Green, FLinearColor::Red, 5.0);
 	FVector ProjectileEnd;
 	if (HitResult.bBlockingHit)
 	{
@@ -79,7 +85,7 @@ void ASCharacter::OnPrimaryAttackTimerComplete()
 	{
 		ProjectileEnd = RayTraceEnd;
 	}
-	UKismetSystemLibrary::DrawDebugPoint(GetWorld(), ProjectileEnd, 20.0, FLinearColor::Red, 5.0);
+	//UKismetSystemLibrary::DrawDebugPoint(GetWorld(), ProjectileEnd, 20.0, FLinearColor::Red, 5.0);
 	//FRotator ProjectTileRotation = UKismetMathLibrary::FindLookAtRotation(Start, LookAtPos);
 	FRotator ProjectTileRotation = FRotationMatrix::MakeFromX(ProjectileEnd - HandLocation).Rotator();
 	FTransform SpawnTM = FTransform(ProjectTileRotation, HandLocation);
@@ -87,43 +93,23 @@ void ASCharacter::OnPrimaryAttackTimerComplete()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	AActor* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(ProjectileClassToSpawn, SpawnTM, SpawnParams);
+
+	return SpawnedProjectile;
+}
+
+
+void ASCharacter::OnPrimaryAttackTimerComplete()
+{
+	FireProjectileInCameraDirection(ProjectileClass, FName(TEXT("Muzzle_01")));
 }
 
 void ASCharacter::OnSecondaryAttackTimerComplete()
 {
-	//Use hand location as starting point for projectile spawn. We can easily
-	//get sockets from a mesh
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_02");
-	FHitResult HitResult;
-	FHitResult DebugHitResult;
+	FireProjectileInCameraDirection(SecondaryProjectileClass, FName(TEXT("Muzzle_02")));
+}
 
-	//The cameras location is the start of the raycast
-	FVector RayTraceStart = CameraComp->GetComponentLocation();
-	FVector RayTraceEnd;
-	float TraceLimit = 5000;
-	//The end of the raycast is 5000 times the forward vector of the raycast.
-	RayTraceEnd = RayTraceStart + TraceLimit * UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetActorForwardVector();
-	const FCollisionQueryParams CollisionQueryParams;
-
-	//we will raycast via a line trace, where the linetrace will hit anything in the visibility channel
-	GetWorld()->LineTraceSingleByChannel(HitResult, RayTraceStart, RayTraceEnd, ECollisionChannel::ECC_Visibility);
-
-	FVector ProjectileEnd;
-	if (HitResult.bBlockingHit)
-	{
-		ProjectileEnd = HitResult.ImpactPoint;
-	}
-	else
-	{
-		ProjectileEnd = RayTraceEnd;
-	}
-	//Rotators have an assignment contructor that can take an FRotationMatrix
-	FRotator ProjectTileRotation = FRotationMatrix::MakeFromX(ProjectileEnd - HandLocation).Rotator();
-	FTransform SpawnTM = FTransform(ProjectTileRotation, HandLocation);
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-	GetWorld()->SpawnActor<AActor>(SecondaryProjectileClass, SpawnTM, SpawnParams);
+void ASCharacter::OnTertiaryAttackTimerComplete()
+{
+	FireProjectileInCameraDirection(TertiaryProjectileClass, FName(TEXT("Muzzle_01")));
 }

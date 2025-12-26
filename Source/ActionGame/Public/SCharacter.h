@@ -23,14 +23,16 @@ public:
 	USInteractionComponent* InteractionComp;
 protected: 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCameraComponent* CameraComp;
+	TObjectPtr<UCameraComponent> CameraComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USpringArmComponent* SpringArm;
+	TObjectPtr<USpringArmComponent> SpringArm;
 
 	FTimerHandle TimerHandle;
 
 	FTimerHandle SecondaryTimerHandle;
+
+	FTimerHandle TertiaryTimerHandle;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
@@ -39,20 +41,31 @@ protected:
 	TSubclassOf<AActor> SecondaryProjectileClass;
 
 	UPROPERTY(EditAnywhere)
-	UAnimMontage* AttackAnim;
+	TSubclassOf<AActor> TertiaryProjectileClass;
 
 	UPROPERTY(EditAnywhere)
-	UAnimMontage* AttackAnim2;
+	TObjectPtr<UAnimMontage> AttackAnim;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> AttackAnim2;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> AttackAnim3;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Attack")
-	UInputAction* ActionPrimaryAttack = nullptr;
+	TObjectPtr<UInputAction> ActionPrimaryAttack = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Attack")
-	UInputAction* ActionSecondaryAttack = nullptr;
+	TObjectPtr<UInputAction> ActionSecondaryAttack = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Attack")
+	TObjectPtr<UInputAction> ActionTertiaryAttack = nullptr;
+
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -60,7 +73,13 @@ public:
 
 	void SecondaryAttack();
 
+	void TertiaryAttack();
+
 	void OnPrimaryAttackTimerComplete();
 
 	void OnSecondaryAttackTimerComplete();
+
+	void OnTertiaryAttackTimerComplete();
+	
+	AActor* FireProjectileInCameraDirection(UClass* ProjectileClassToSpawn, FName SocketName);
 };
